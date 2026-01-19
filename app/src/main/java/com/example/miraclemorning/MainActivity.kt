@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
             db = dbHelper,
             refresh = { loadSchedules() }
         ) { item ->
-            // ✅ 리스트 아이템 클릭 -> 상세 화면 이동
+            // 리스트 아이템 클릭 -> 상세 화면 이동
             val intent = Intent(this, ScheduleDetailActivity::class.java)
             intent.putExtra("id", item.id)
             intent.putExtra("date", item.date)
@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
         }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true).show()
     }
 
-    // ✅ 상세에서 저장/삭제 후 돌아오면 목록 갱신
+    // 상세에서 저장/삭제 후 돌아오면 목록 갱신
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 2001 && resultCode == RESULT_OK) {
