@@ -33,6 +33,14 @@
             android:name=".alarm.AlarmReceiver"
             android:exported="false" />
 
+        <activity 
+            android:name=".utils.MyAlarmSetupActivity" />
+        
+        <receiver 
+            android:name=".utils.MyAlarmReceiver" 
+            android:exported="false" />
+
+
     </application>
 
 </manifest>
