@@ -1,0 +1,24 @@
+package com.example.miraclemorning.alarm
+
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.widget.Toast
+import com.example.miraclemorning.utils.MyAlarmUtil
+import com.example.miraclemorning.utils.RoutineStateManager
+
+class RoutineStartReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        val routineId = intent.getIntExtra("routineId", -1)
+        if (routineId != -1) {
+            // 루틴 시작 상태 저장
+            RoutineStateManager.setStarted(context, routineId)
+
+            // 남은 알람 모두 취소
+            MyAlarmUtil.cancelRoutinePreAlarms(context, routineId)
+
+            // 사용자에게 알림
+            Toast.makeText(context, "루틴을 시작했습니다!", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
