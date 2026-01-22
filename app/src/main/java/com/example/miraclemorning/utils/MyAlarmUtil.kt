@@ -8,7 +8,7 @@ import java.util.Calendar
 
 object MyAlarmUtil {
 
-    / 명언 알람 등록 (매일 반복) /
+    /* 명언 알람 등록 (매일 반복) */
     fun setQuoteAlarm(
         context: Context,
         hour: Int,
@@ -46,7 +46,7 @@ object MyAlarmUtil {
         )
     }
 
-    / 명언 알람 취소 /
+    /* 명언 알람 취소 */
     fun cancelQuoteAlarm(
         context: Context,
         requestCode: Int
@@ -66,7 +66,7 @@ object MyAlarmUtil {
         alarmManager.cancel(pendingIntent)
     }
 
-    / 루틴 시작 전 알람 등록 (15, 10, 5분 전) /
+    /* 루틴 시작 전 알람 등록 (15, 10, 5분 전) */
     fun setRoutinePreAlarms(
         context: Context,
         year: Int,
@@ -112,7 +112,7 @@ object MyAlarmUtil {
         }
     }
 
-    / 루틴 사전 알람 취소/
+    /* 루틴 사전 알람 취소 */
     fun cancelRoutinePreAlarms(
         context: Context,
         baseRequestCode: Int
@@ -134,7 +134,7 @@ object MyAlarmUtil {
         }
     }
 
-    / 명언 + 루틴 알람 전부 취소 (선택) /
+    /* 명언 + 루틴 알람 전부 취소 (선택) */
     fun cancelAllMyAlarms(context: Context) {
         // 명언 알람 3개
         cancelQuoteAlarm(context, 2001)
