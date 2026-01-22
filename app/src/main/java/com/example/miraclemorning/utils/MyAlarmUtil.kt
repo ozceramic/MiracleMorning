@@ -1,105 +1,49 @@
+
 package com.example.miraclemorning.utils
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import com.example.miraclemorning.alarm.MyAlarmReceiver
 import java.util.Calendar
 
 object MyAlarmUtil {
 
-    /* 명언 알람 등록 (매일 반복) */
-    fun setQuoteAlarm(
-        context: Context,
-        hour: Int,
-        minute: Int,
-        requestCode: Int
-    ) {
-        val alarmManager =
-            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        val intent = Intent(context, MyAlarmReceiver::class.java)
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            requestCode,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, hour)
-            set(Calendar.MINUTE, minute)
-            set(Calendar.SECOND, 0)
-        }
-
-        if (calendar.timeInMillis < System.currentTimeMillis()) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
-
-        alarmManager.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
-        )
-    }
-
-    /* 명언 알람 취소 */
-    fun cancelQuoteAlarm(
-        context: Context,
-        requestCode: Int
-    ) {
-        val alarmManager =
-            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        val intent = Intent(context, MyAlarmReceiver::class.java)
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            requestCode,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        alarmManager.cancel(pendingIntent)
-    }
-
-    /* 루틴 시작 전 알람 등록 (15, 10, 5분 전) */
+    // 루틴 시작 전 알림 3개 예약
+    @SuppressLint("ScheduleExactAlarm")
     fun setRoutinePreAlarms(
         context: Context,
         year: Int,
-        month: Int,   // Calendar 기준 (1월 = 0)
+        month: Int,
         day: Int,
         hour: Int,
         minute: Int,
-        routineTitle: String,
-        baseRequestCode: Int
+        routineContent: String,
+        routineId: Int
     ) {
-        val alarmManager =
-            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        val minutesList = listOf(15, 10, 5)
+        val minutesBefore = listOf(15, 10, 5)
 
-        minutesList.forEachIndexed { index, beforeMinute ->
+        for ((index, beforeMin) in minutesBefore.withIndex()) {
             val calendar = Calendar.getInstance().apply {
                 set(year, month, day, hour, minute, 0)
-                add(Calendar.MINUTE, -beforeMinute)
+                add(Calendar.MINUTE, -beforeMin)
             }
 
-            if (calendar.timeInMillis < System.currentTimeMillis()) return@forEachIndexed
+            val requestCode = routineId * 10 + index
 
             val intent = Intent(context, MyAlarmReceiver::class.java).apply {
-                putExtra(
-                    "content",
-                    "⏰ '$routineTitle' 루틴 시작 ${beforeMinute}분 전이에요!"
-                )
+                putExtra("content", "$routineContent 시작 ${beforeMin}분 전입니다")
+                putExtra("routineId", routineId)
+                putExtra("requestCode", requestCode)
             }
 
             val pendingIntent = PendingIntent.getBroadcast(
                 context,
-                baseRequestCode + index,
+                requestCode,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
@@ -112,36 +56,19 @@ object MyAlarmUtil {
         }
     }
 
-    /* 루틴 사전 알람 취소 */
-    fun cancelRoutinePreAlarms(
-        context: Context,
-        baseRequestCode: Int
-    ) {
-        val alarmManager =
-            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        repeat(3) { index ->
+    // 루틴 알림 전체 취소 (시작하면 호출)
+    fun cancelRoutinePreAlarms(context: Context, routineId: Int) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        for (index in 0..2) {
+            val requestCode = routineId * 10 + index
             val intent = Intent(context, MyAlarmReceiver::class.java)
-
             val pendingIntent = PendingIntent.getBroadcast(
                 context,
-                baseRequestCode + index,
+                requestCode,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
-
             alarmManager.cancel(pendingIntent)
         }
-    }
-
-    /* 명언 + 루틴 알람 전부 취소 (선택) */
-    fun cancelAllMyAlarms(context: Context) {
-        // 명언 알람 3개
-        cancelQuoteAlarm(context, 2001)
-        cancelQuoteAlarm(context, 2002)
-        cancelQuoteAlarm(context, 2003)
-
-        // 예시로 루틴 baseRequestCode = 3000
-        cancelRoutinePreAlarms(context, 3000)
     }
 }
