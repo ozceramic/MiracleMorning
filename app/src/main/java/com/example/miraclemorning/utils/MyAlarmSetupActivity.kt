@@ -15,5 +15,4 @@ class MyAlarmSetupActivity : AppCompatActivity() {
             MyAlarmUtil.setQuoteAlarm(this, 12, 0, 2002)
             MyAlarmUtil.setQuoteAlarm(this, 20, 0, 2003)
         }
-    }
-}
+    }}

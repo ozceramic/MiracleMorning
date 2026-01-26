@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">MiracleMorning</string>
+    <string name="quote_alarm_title">명언 알람 설정</string>
+    <string name="no_time_selected">선택된 시간: 없음</string>
+    <string name="select_alarm_time">알람 시간 선택</string>
+    <string name="set_alarm">알람 설정하기</string>
+    <string name="back_to_main">뒤로 가기</string>
 </resources>

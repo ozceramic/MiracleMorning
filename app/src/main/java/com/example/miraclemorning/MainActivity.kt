@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 명언 알람 등록 버튼 클릭 시
-        findViewById<Button>(R.id.btnSetQuoteAlarms).setOnClickListener {
+        findViewById<Button>(R.id.btnQuoteAlarms).setOnClickListener {
             MyAlarmUtil.setQuoteAlarm(this, 6, 0, 2001)
             MyAlarmUtil.setQuoteAlarm(this, 12, 0, 2002)
             MyAlarmUtil.setQuoteAlarm(this, 20, 0, 2003)
