@@ -36,6 +36,10 @@
         <activity
             android:name=".ui.SettingsActivity"
             android:exported="false" />
+        <activity
+            android:name=".AchievementActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         /* (기존) 일정 알람 리시버 */
         <receiver
