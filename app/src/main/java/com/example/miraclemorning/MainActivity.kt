@@ -22,10 +22,9 @@ import com.example.miraclemorning.data.Schedule
 import com.example.miraclemorning.data.ScheduleDBHelper
 import com.example.miraclemorning.ui.ScheduleAdapter
 import com.example.miraclemorning.ui.ScheduleDetailActivity
+import com.example.miraclemorning.utils.MyAlarmUtil
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -70,6 +69,17 @@ class MainActivity : AppCompatActivity() {
             }
             openTimePicker(content)
         }
+
+        // 명언 알람 등록 버튼 클릭 시
+        findViewById<Button>(R.id.btnSetQuoteAlarms).setOnClickListener {
+            MyAlarmUtil.setQuoteAlarm(this, 6, 0, 2001)
+            MyAlarmUtil.setQuoteAlarm(this, 12, 0, 2002)
+            MyAlarmUtil.setQuoteAlarm(this, 20, 0, 2003)
+            Toast.makeText(this, "명언 알람이 설정되었습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+        // 앱 실행 시 루틴 알람 테스트
+        testRoutineAlarms()
     }
 
     private fun setupRecyclerView() {
@@ -78,7 +88,6 @@ class MainActivity : AppCompatActivity() {
             db = dbHelper,
             refresh = { loadSchedules() }
         ) { item ->
-            // 리스트 아이템 클릭 -> 상세 화면 이동
             val intent = Intent(this, ScheduleDetailActivity::class.java)
             intent.putExtra("id", item.id)
             intent.putExtra("date", item.date)
@@ -109,7 +118,6 @@ class MainActivity : AppCompatActivity() {
                 return@TimePickerDialog
             }
 
-            // 알람 설정 (실패해도 앱은 계속 돌아가게)
             try {
                 val parts = selectedDate.split("-")
                 val year = parts[0].toInt()
@@ -137,7 +145,6 @@ class MainActivity : AppCompatActivity() {
         }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true).show()
     }
 
-    // 상세에서 저장/삭제 후 돌아오면 목록 갱신
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 2001 && resultCode == RESULT_OK) {
@@ -173,4 +180,26 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    // 앱 실행 시 루틴 알람 3개 테스트용 예약
+    private fun testRoutineAlarms() {
+        val now = Calendar.getInstance()
+        val year = now.get(Calendar.YEAR)
+        val month = now.get(Calendar.MONTH)
+        val day = now.get(Calendar.DAY_OF_MONTH)
+        val hour = now.get(Calendar.HOUR_OF_DAY)
+        val minute = now.get(Calendar.MINUTE) + 1 // 1분 후 루틴 시작 가정
+
+        MyAlarmUtil.setRoutinePreAlarms(
+            context = this,
+            year = year,
+            month = month,
+            day = day,
+            hour = hour,
+            minute = minute,
+            routineContent = "테스트 루틴",
+            routineId = 9999
+        )
+    }
 }
+
