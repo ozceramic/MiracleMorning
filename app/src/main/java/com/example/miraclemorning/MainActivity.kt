@@ -24,7 +24,9 @@ import com.example.miraclemorning.ui.ScheduleAdapter
 import com.example.miraclemorning.ui.ScheduleDetailActivity
 import com.example.miraclemorning.utils.MyAlarmUtil
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -80,6 +82,23 @@ class MainActivity : AppCompatActivity() {
 
         // 앱 실행 시 루틴 알람 테스트
         testRoutineAlarms()
+        val bottomNav = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottom_navigation)
+
+        // 2. 현재 탭 설정 (달력)
+        bottomNav.selectedItemId = R.id.nav_calendar
+        bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_calendar -> true // 현재 화면이므로 아무것도 안 함
+                R.id.nav_achievement -> {
+                    // 달성률 화면으로 이동
+                    val intent = Intent(this, AchievementActivity::class.java)
+                    startActivity(intent)
+                    overridePendingTransition(0, 0) // 화면 전환 애니메이션 제거 (자연스럽게)
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -118,6 +137,7 @@ class MainActivity : AppCompatActivity() {
                 return@TimePickerDialog
             }
 
+            // 알람 설정 (실패해도 앱은 계속 돌아가게)
             try {
                 val parts = selectedDate.split("-")
                 val year = parts[0].toInt()
