@@ -142,4 +142,35 @@ class ScheduleDBHelper(context: Context) :
 
         return count
     }
+    fun getAchievementRateUntilNow(): Pair<Int, Int> {
+        val db = readableDatabase
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+        val now = sdf.format(Calendar.getInstance().time)
+        val nowDate = now.substring(0, 10) // yyyy-MM-dd
+        val nowTime = now.substring(11)    // HH:mm
+
+        // 조건: 날짜가 오늘보다 이전이거나, 날짜는 오늘인데 시간이 현재 시간보다 이전인 경우
+        val whereClause = "date < ? OR (date = ? AND time <= ?)"
+        val whereArgs = arrayOf(nowDate, nowDate, nowTime)
+
+        // 1. 현재까지 진행했어야 할 전체 일정 개수
+        val totalCursor = db.rawQuery(
+            "SELECT COUNT(*) FROM schedule WHERE $whereClause",
+            whereArgs
+        )
+        totalCursor.moveToFirst()
+        val totalCount = totalCursor.getInt(0)
+        totalCursor.close()
+
+        // 2. 그 중 완료(isDone = 1)된 일정 개수
+        val doneCursor = db.rawQuery(
+            "SELECT COUNT(*) FROM schedule WHERE ($whereClause) AND isDone = 1",
+            whereArgs
+        )
+        doneCursor.moveToFirst()
+        val doneCount = doneCursor.getInt(0)
+        doneCursor.close()
+
+        return Pair(totalCount, doneCount)
+    }
 }
