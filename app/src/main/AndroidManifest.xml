@@ -27,6 +27,7 @@
             </intent-filter>
         </activity>
 
+
         /* 일정 상세 화면 */
         <activity
             android:name=".ui.ScheduleDetailActivity"
@@ -38,8 +39,7 @@
             android:exported="false" />
         <activity
             android:name=".AchievementActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false" /> />
 
         /* (기존) 일정 알람 리시버 */
         <receiver
@@ -48,7 +48,7 @@
 
         /* 루틴 + 명언 통합 알림 리시버 */
         <receiver
-            android:name=".alarm.MyAlarmReceiver"
+            android:name=".utils.MyAlarmReceiver"
             android:exported="false" />
 
         /* 알림에서 [루틴 시작] 버튼 처리 리시버 */
