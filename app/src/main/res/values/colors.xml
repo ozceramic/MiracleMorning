@@ -2,4 +2,14 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="bg_cream">#E9D5AE</color>
+    <color name="card_light">#66f3e7d9</color>
+    <color name="card_dark">#C6A892</color>
+    <color name="text_main">#5D4037</color>
+    <color name="quote_bg">#704232</color>
+    <color name="btn_save">#704232</color>
+    <color name="btn_delete">#B22222</color>
+    <color name="divider">#AFA192</color>
+
 </resources>

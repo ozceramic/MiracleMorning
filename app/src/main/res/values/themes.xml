@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.MiracleMorning" parent="Base.Theme.MiracleMorning" />
+
+    <style name="CustomTodoCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:button">@null</item>
+        <item name="android:background">@drawable/selector_todo_check</item>
+    </style>
+
 </resources>
