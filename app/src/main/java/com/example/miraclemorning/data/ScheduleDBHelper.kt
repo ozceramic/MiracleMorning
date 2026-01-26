@@ -18,7 +18,9 @@ class ScheduleDBHelper(context: Context) :
                     "date TEXT," +
                     "time TEXT," +
                     "content TEXT," +
-                    "isDone INTEGER DEFAULT 0" +
+                    "isDone INTEGER DEFAULT 0," +
+                    //  (date, time, content) 동일한 일정은 1개만 허용
+                    "UNIQUE(date, time, content)" +
                     ")"
         )
     }
@@ -27,6 +29,12 @@ class ScheduleDBHelper(context: Context) :
         if (oldVersion < 2) {
             db.execSQL("ALTER TABLE schedule ADD COLUMN isDone INTEGER DEFAULT 0")
         }
+
+        // 기존에 이미 생성된 DB에도 중복 방지 적용
+        db.execSQL(
+            "CREATE UNIQUE INDEX IF NOT EXISTS idx_schedule_unique " +
+                    "ON schedule(date, time, content)"
+        )
     }
 
     fun insertSchedule(date: String, time: String, content: String): Long {
@@ -36,7 +44,14 @@ class ScheduleDBHelper(context: Context) :
             put("content", content)
             put("isDone", 0)
         }
-        return writableDatabase.insert("schedule", null, values)
+
+        //  중복이면 무시(필요없으면 insert로 바꿔도 됨)
+        return writableDatabase.insertWithOnConflict(
+            "schedule",
+            null,
+            values,
+            SQLiteDatabase.CONFLICT_IGNORE
+        )
     }
 
     fun getSchedulesByDate(date: String): List<Schedule> {
@@ -80,10 +95,7 @@ class ScheduleDBHelper(context: Context) :
         writableDatabase.delete("schedule", "id=?", arrayOf(id.toString()))
     }
 
-    /**
-     * 기간 루틴 등록
-    
-     */
+    //(date,time,content) 중복이면 자동 무시(CONFLICT_IGNORE) → 오늘이 2번 들어가는 기존 문제 해결
     fun insertRoutineRange(startDate: String, endDate: String, time: String, content: String): Int {
         val db = writableDatabase
         db.beginTransaction()
@@ -111,7 +123,13 @@ class ScheduleDBHelper(context: Context) :
                     put("isDone", 0)
                 }
 
-                val rowId = db.insert("schedule", null, values)
+                // 중복이면 rowId = -1 반환(무시됨)
+                val rowId = db.insertWithOnConflict(
+                    "schedule",
+                    null,
+                    values,
+                    SQLiteDatabase.CONFLICT_IGNORE
+                )
                 if (rowId != -1L) count++
 
                 start.add(Calendar.DAY_OF_MONTH, 1)
