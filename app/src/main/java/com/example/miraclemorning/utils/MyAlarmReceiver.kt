@@ -9,7 +9,7 @@ import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.miraclemorning.R
-import com.example.miraclemorning.ui.MainActivity
+import com.example.miraclemorning.MainActivity
 import com.example.miraclemorning.utils.QuoteProvider
 import com.example.miraclemorning.utils.RoutineStateManager
 
